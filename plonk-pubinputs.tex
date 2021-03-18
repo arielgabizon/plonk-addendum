@@ -1,0 +1,1009 @@
+% !tex ts-program = pdflatex
+% !tex encoding = utf-8 unicode
+
+% this is a simple template for a latex document using the "article" class.
+% see "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with xelatex)
+\usepackage[strict]{changepage}
+    
+    %%% examples of article customizations
+    % these packages are optional, depending whether you want the features they provide.
+    % see the latex companion or other references for full information.
+    
+    
+    %%% page dimensions
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (us) or a5paper or....
+    % \geometry{margin=2in} % for example, change the margins to 2 inches all round
+    % \geometry{landscape} % set up the page for landscape
+    %   read geometry.pdf for detailed page layout information
+ \usepackage{numdef}
+   
+\usepackage{graphicx} % support the \includegraphics command and options
+    % some of the article customisations are relevant for this class
+\usepackage{amsmath,amsthm}
+\usepackage{amsfonts} % math fonts such as \mathbb{}
+\usepackage{amssymb} % \therefore
+% \usepackage{bickham}
+\usepackage{hyperref}
+\usepackage{cryptocode}
+\usepackage{framed} 
+    % \usepackage[parfill]{parskip} % activate to begin paragraphs with an empty line rather than an indent
+    
+    %%% packages
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. Enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+    % % these packages are all incorporated in the memoir class to one degree or another...
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{adjustbox}
+
+\usepackage{pgfplots}
+
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+  
+    %%% headers & footers
+\usepackage{fancyhdr} % this should be set after setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+    
+    
+    %%% section title appearance
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (see the fntguide.pdf for font help)
+    % (this matches context defaults)
+    
+    %%% toc (table of contents) appearance
+\usepackage[nottoc,notlof,notlot]{tocbibind} % put the bibliography in the toc
+\usepackage[titles,subfigure]{tocloft} % alter the style of the table of contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % no bold!
+
+    %%% end article customizations
+    \newcommand{\code}[1]{\texttt{#1}}
+\newcommand\tstrut{\rule{0pt}{2.6ex}}         % = `top' strut
+\newcommand\bstrut{\rule[-0.9ex]{0pt}{0pt}}   % = `bottom' strut
+\newcommand{\bgamma}{\boldsymbol{\gamma}}
+\newcommand{\bsigma}{\boldsymbol{\sigma}}
+\newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}\xspace}
+
+% \newcommand{\plonk}{\ensuremath{\mathtt{PLONK}}\xspace}
+%%% the "real" document content comes below...
+%\newcommand{\papertitle}{$\mathsf{Maitreya}$: Improved Prover Efficiency in Fully Succinct Universal zk-SNARKs through Permutation Arguments for Multiplicative Subgroups}
+\newcommand{\papertitle}{Public inputs in \plonk in the COVID-19 era}
+%\newcommand{\authorname}}
+\newcommand{\company}{}
+\title{ \bf \papertitle \\[0.72cm]}
+\author{ Ariel Gabizon\\ \tt{Aztec}  \and Zachary J. Williamson\\ \tt{Aztec} } 
+
+% 	\large{\authorname} \\[0.5cm] \large{\company}
+% 	\\ {DRAFT}
+%}
+    %\date{} % activate to display a given date or no date (if empty),
+  
+           % otherwise the current date is printed 
+	
+\ProvidesPackage{numdef}
+
+%% Ariel Macros:
+\num\newcommand{\G1}{\ensuremath{{\mathbb G}_1}\xspace}
+\newcommand{\Gi}{\ensuremath{{\mathbb G}_i}\xspace}
+%\newcommand{\G}{\ensuremath{{\mathbb G}}\xspace}
+\newcommand{\Gstar}{\ensuremath{{\mathbb G}^*}\xspace}
+\newcommand{\x}{\ensuremath{\mathbf{x}}\xspace}
+\newcommand{\z}{\ensuremath{\mathbf{z}}\xspace}
+\newcommand{\X}{\ensuremath{\mathbf{X}}\xspace}
+
+\num\newcommand{\G2}{\ensuremath{{\mathbb G}_2}\xspace}
+%\num\newcommand{\G11}{\ensuremath{\G1\setminus \set{0} }\xspace}
+%\num\newcommand{\G21}{\ensuremath{\G2\setminus \set{0} }\xspace}
+\newcommand{\grouppair}{\ensuremath{G^*}\xspace}
+\newcommand{\prvperm}{\ensuremath{\mathrm{P_{\mathsf{\sigma}}}}\xspace}
+\newcommand{\verperm}{\ensuremath{\mathrm{V_{\mathsf{\sigma}}}}\xspace}
+
+\newcommand{\Gt}{\ensuremath{{\mathbb G}_t}\xspace}
+\newcommand{\F}{\ensuremath{\mathbb F}\xspace}
+\newcommand{\sizef}{\ensuremath{|\mathbb F|}\xspace}
+\newcommand{\Fstar}{\ensuremath{\mathbb F^*}\xspace}
+\newcommand{\upp}{\ensuremath{U}\xspace}
+\newcommand{\relupp}{\ensuremath{R_{m,\upp}}\xspace}
+\newcommand{\aggdeg}[1]{\ensuremath{\mathfrak{d}(#1)}\xspace}
+
+\newcommand{\help}[1]{$#1$-helper\xspace}
+\newcommand{\randompair}[1]{\ensuremath{\mathsf{randomPair}(#1)}\xspace}
+\newcommand{\pair}[1]{$#1$-pair\xspace}
+\newcommand{\pairs}[1]{$#1$-pairs\xspace}
+\newcommand{\chalpoint}{\ensuremath{\mathfrak{z}}\xspace}
+
+\newcommand{\pairone}[1]{\G1-$#1$-pair\xspace}
+\newcommand{\pairtwo}[1]{\G2-$#1$-pair\xspace}
+\newcommand{\sameratio}[2]{\ensuremath{\mathsf{SameRatio}(#1,#2)}\xspace}
+\newcommand{\vecc}[2]{\ensuremath{(#1)_{#2}}\xspace}
+\newcommand{\players}{\ensuremath{[n]}\xspace}
+\newcommand{\adv}{\ensuremath{\mathcal A}\xspace}
+\newcommand{\advprime}{\ensuremath{{\mathcal A}'}\xspace}
+\newcommand{\extprime}{\ensuremath{E'}\xspace}
+\newcommand{\advrand}{\ensuremath{\mathsf{rand}_{\adv}}\xspace}
+\num\newcommand{\srs1}{\ensuremath{\mathsf{srs_1}}\xspace}
+\num\newcommand{\srs2}{\ensuremath{\mathsf{srs_2}}\xspace}
+\num\newcommand{\srs0}{\ensuremath{\mathsf{srs}}\xspace}
+\newcommand{\srsi}{\ensuremath{\mathsf{srs_i}}\xspace}
+\newcommand{\com}{\ensuremath{\mathsf{com}}\xspace}
+\newcommand{\comperm}{\ensuremath{\mathsf{com_{\sigma}}}\xspace}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}\xspace}
+\newcommand{\cmsig}{\ensuremath{\mathsf{cm_\sigma}}\xspace}
+\newcommand{\open}{\ensuremath{\mathsf{open}}\xspace}
+\newcommand{\openperm}{\ensuremath{\mathsf{open_{\sigma}}}\xspace}
+\newcommand{\sigof}[1]{\ensuremath{\sigma(#1)}\xspace}
+\newcommand{\proverexp}{\ensuremath{\mathsf{e}}\xspace}
+\newcommand{\reducedelems}{\ensuremath{\mathsf{r}}\xspace}
+
+\newcommand{\ci}{\ensuremath{\mathrm{CI}}\xspace}
+\newcommand{\pubinputdelta}{\ensuremath{\mathrm{\Delta_{\mathrm{PI}}}}\xspace}
+\renewcommand{\deg}{\ensuremath{\mathrm{deg}}\xspace}
+\newcommand{\pairvec}[1]{$#1$-vector\xspace}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}\xspace}
+\newcommand{\randpair}[1]{\ensuremath{\mathsf{rp}_{#1}}\xspace}
+\newcommand{\randpairone}[1]{\ensuremath{\mathsf{rp}_{#1}^{1}}\xspace}
+\newcommand{\abase}{\ensuremath{A_{\mathrm{\mathbf{0}}}}\xspace}
+\newcommand{\bbase}{\ensuremath{B_{\mathrm{\mathbf{0}}}}\xspace}
+\newcommand{\cbase}{\ensuremath{C_{\mathrm{\mathbf{0}}}}\xspace}
+
+\newcommand{\amid}{\ensuremath{A_{\mathrm{mid}}}\xspace}
+\newcommand{\bmid}{\ensuremath{B_{\mathrm{mid}}}\xspace}
+\newcommand{\cmid}{\ensuremath{C_{\mathrm{mid}}}\xspace}
+
+\newcommand{\negl}{\ensuremath{\mathsf{negl}(\lambda)}\xspace}
+\newcommand{\randpairtwo}[1]{\ensuremath{\mathsf{rp_{#1}^2}}\xspace}%the randpair in G2
+\newcommand{\nilp}{\ensuremath{\mathscr N}\xspace}
+\newcommand{\groupgen}{\ensuremath{\mathscr G}\xspace}
+\newcommand{\qap}{\ensuremath{\mathscr Q}\xspace}
+\newcommand{\polprot}[4]{$(#1,#2,#3,#4)$-polynomial protocol}
+\newcommand{\rangedprot}[5]{$#5$-ranged $(#1,#2,#3,#4)$-polynomial protocol}
+
+\newcommand{\rej}{\ensuremath{\mathsf{rej}}\xspace}
+\newcommand{\acc}{\ensuremath{\mathsf{acc}}\xspace}
+\newcommand{\res}{\ensuremath{\mathsf{res}}\xspace}
+\newcommand{\sha}[1]{\ensuremath{\mathsf{COMMIT}(#1)}\xspace}
+ \newcommand{\shaa}{\ensuremath{\mathsf{COMMIT}}\xspace}
+ \newcommand{\comm}[1]{\ensuremath{\mathsf{comm}_{#1}}\xspace}
+ \newcommand{\defeq}{:=}
+
+\newcommand{\B}{\ensuremath{\vec{B}}\xspace}
+\newcommand{\dom}{\ensuremath{H}\xspace}
+\newcommand{\C}{\ensuremath{\vec{C}}\xspace}
+\newcommand{\Btwo}{\ensuremath{\vec{B_2}}\xspace}
+\newcommand{\treevecsimp}{\ensuremath{(\tau,\rho_A,\rho_A \rho_B,\rho_A\alpha_A,\rho_A\rho_B\alpha_B, \rho_A\rho_B\alpha_C,\beta,\beta\gamma)}\xspace}% The sets of elements used in simplifed relation tree in main text body
+\newcommand{\rcptc}{random-coefficient subprotocol\xspace}
+\newcommand{\rcptcparams}[2]{\ensuremath{\mathrm{RCPC}(#1,#2)}\xspace}
+\newcommand{\verifyrcptcparams}[2]{\ensuremath{\mathrm{\mathsf{verify}RCPC}(#1,#2)}\xspace}
+\newcommand{\randadv}{\ensuremath{\mathsf{rand}_{\adv}}\xspace}
+ \num\newcommand{\ex1}[1]{\ensuremath{ #1\cdot g_1}\xspace}
+ \num\newcommand{\ex2}[1]{\ensuremath{#1\cdot g_2}\xspace}
+ \newcommand{\pr}{\mathrm{Pr}}
+ \newcommand{\powervec}[2]{\ensuremath{(1,#1,#1^{2},\ldots,#1^{#2})}\xspace}
+ \newcommand{\partition}{\ensuremath{{\mathcal T}}\xspace}
+ \newcommand{\partof}[1]{\ensuremath{{\partition_{#1}}}\xspace}
+\num\newcommand{\out1}[1]{\ensuremath{\ex1{\powervec{#1}{d}}}\xspace}
+\num\newcommand{\out2}[1]{\ensuremath{\ex2{\powervec{#1}{d}}}\xspace}
+ \newcommand{\nizk}[2]{\ensuremath{\mathrm{NIZK}(#1,#2)}\xspace}% #2 is the hash concatenation input
+ \newcommand{\verifynizk}[3]{\ensuremath{\mathrm{VERIFY\mhyphen NIZK}(#1,#2,#3)}\xspace}
+\newcommand{\protver}{protocol verifier\xspace} 
+\newcommand{\mulgroup}{\ensuremath{\F^*}\xspace}
+\newcommand{\lag}[1]{\ensuremath{L_{#1}}\xspace} 
+\newcommand{\sett}[2]{\ensuremath{\set{#1}_{#2}}\xspace}
+\newcommand{\omegaprod}{\ensuremath{\alpha_{\omega}}\xspace}
+\newcommand{\lagvec}[1]{\ensuremath{\mathrm{LAG}_{#1}}\xspace}
+\newcommand{\trapdoor}{\ensuremath{r}}
+\newcommand{\trapdoorext}{\ensuremath{r_{\mathrm{ext}}}\xspace}
+\newcommand{\trapdoorsim}{\ensuremath{r_{\mathrm{sim}}}\xspace}
+\renewcommand{\mod}{\ensuremath{\;\mathrm{mod}\;}}
+\newcommand{\hsub}{\ensuremath{H^*}\xspace}
+\num\newcommand{\enc1}[1]{\ensuremath{\left[#1\right]_1}\xspace}
+\newcommand{\enci}[1]{\ensuremath{\left[#1\right]_i}\xspace}
+\num\newcommand{\enc2}[1]{\ensuremath{\left[#1\right]_2}\xspace}
+\newcommand{\gen}{\ensuremath{\mathsf{gen}}\xspace}
+\newcommand{\prv}{\ensuremath{\mathsf{\mathbf{P}}}\xspace}
+\newcommand{\prvpoly}{\ensuremath{\mathrm{P_{\mathsf{poly}}}}\xspace}
+\newcommand{\prvpc}{\ensuremath{\mathrm{P_{\mathsf{PC}}}}\xspace}
+\newcommand{\verpoly}{\ensuremath{\mathrm{V_{\mathsf{poly}}}}\xspace}
+\newcommand{\verpc}{\ensuremath{\mathrm{V_{\mathsf{PC}}}}\xspace}
+\newcommand{\ideal}{\ensuremath{\mathcal{I}}\xspace}
+\newcommand{\prf}{\ensuremath{\pi}\xspace}
+\newcommand{\simprv}{\ensuremath{\mathrm{P^{sim}}}\xspace}
+
+%\newcommand{\enc}[1]{\ensuremath{\left[#1\right]}\xspace}
+%\num\newcommand{\G0}{\ensuremath{\mathbf{G}}\xspace}
+\newcommand{\GG}{\ensuremath{\mathbf{G^*}}\xspace}  % would have liked to call this G01 but problem with name
+\num\newcommand{\g0}{\ensuremath{\mathbf{g}}\xspace}
+\newcommand{\inst}{\ensuremath{\phi}\xspace}
+\newcommand{\inp}{\ensuremath{\mathsf{x}}\xspace}
+\newcommand{\wit}{\ensuremath{\omega}\xspace}
+\newcommand{\ver}{\ensuremath{\mathsf{\mathbf{V}}}\xspace}
+\newcommand{\per}{\ensuremath{\mathsf{\mathbf{P}}}\xspace}
+\newcommand{\sonic}{\ensuremath{\mathsf{Sonic}}\xspace}
+\newcommand{\aurora}{\ensuremath{\mathsf{Aurora}}\xspace}
+\newcommand{\auroralight}{\ensuremath{\mathsf{Auroralight}}\xspace}
+\newcommand{\groth}{\ensuremath{\mathsf{Groth'16}}\xspace}
+\newcommand{\kate}{\ensuremath{\mathsf{KZG}}\xspace}
+\newcommand{\rel}{\ensuremath{\mathcal{R}}\xspace}
+\newcommand{\ext}{\ensuremath{E}\xspace}
+\newcommand{\params}{\ensuremath{\mathsf{params}_{\inst}}\xspace}
+\newcommand{\protparams}{\ensuremath{\mathsf{params}_{\inst}^\advv}\xspace}
+\num\newcommand{\p1}{\ensuremath{P_1}\xspace}
+\newcommand{\advv}{\ensuremath{ {\mathcal A}^{\mathbf{*}}}\xspace} % the adversary that uses protocol adversary as black box
+\newcommand{\crs}{\ensuremath{\sigma}\xspace}
+%\num\newcommand{\crs1}{\ensuremath{\mathrm{\sigma}_1}\xspace}
+%\num\newcommand{\crs2}{\ensuremath{\mathrm{\sigma}_2}\xspace}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}\xspace}
+\newcommand{\hgen}{\ensuremath{\mathbf{g}}\xspace}
+\renewcommand{\sim}{\ensuremath{\mathsf{sim}}\xspace}%the distribution of messages when \advv simulates message of \p1
+\newcommand{\real}{\ensuremath{\mathsf{real}}\xspace}%the distribution of messages when \p1 is honest and \adv controls rest of players
+ \newcommand{\koevec}[2]{\ensuremath{(1,#1,\ldots,#1^{#2},\alpha,\alpha #1,\ldots,\alpha #1^{#2})}\xspace}
+\newcommand{\mida}{\ensuremath{A_{\mathrm{mid}}}\xspace}
+\newcommand{\midb}{\ensuremath{B_{\mathrm{mid}}}\xspace}
+\newcommand{\midc}{\ensuremath{C_{\mathrm{mid}}}\xspace}
+\newcommand{\chal}{\ensuremath{\mathsf{challenge}}\xspace}
+\newcommand{\attackparams}{\ensuremath{\mathsf{params^{pin}}}\xspace}
+\newcommand{\pk}{\ensuremath{\mathsf{pk}}\xspace}
+\newcommand{\attackdist}[2]{\ensuremath{AD_{#1}}\xspace}
+\renewcommand{\neg}{\ensuremath{\mathsf{negl}(\lambda)}\xspace}
+\newcommand{\ro}{\ensuremath{{\mathcal R}}\xspace}
+\newcommand{\elements}[1]{\ensuremath{\mathsf{elements}_{#1}}\xspace}
+ \num\newcommand{\elmpowers1}[1]{\ensuremath{\mathrm{\mathsf{e}}^1_{#1}}\xspace}
+ \num\newcommand{\elmpowers2}[1]{\ensuremath{\mathrm{\mathsf{e}}^2_{#1}}\xspace}
+\newcommand{\elempowrs}[1]{\ensuremath{\mathsf{e}_{#1}}\xspace}
+ \newcommand{\secrets}{\ensuremath{\mathsf{secrets}}\xspace}
+ \newcommand{\polysofdeg}[1]{\ensuremath{\F_{< #1}[X]}\xspace}
+ \newcommand{\bivar}[1]{\ensuremath{\F_{< #1}[X,Y]}\xspace}
+ \newcommand{\sig}{\ensuremath{\sigma}\xspace}
+ \newcommand{\prot}{\ensuremath{\mathscr{P}}\xspace}
+ \newcommand{\PCscheme}{\ensuremath{\mathscr{S}}\xspace}
+ \newcommand{\protprime}{\ensuremath{\mathscr{P^*}}\xspace}
+ \newcommand{\sigprv}{\ensuremath{\mathsf{P_{sc}}}\xspace}
+ \newcommand{\sigver}{\ensuremath{\mathsf{V_{sc}}}\xspace}
+ \newcommand{\sigpoly}{\ensuremath{\mathsf{S_{\sigma}}}\xspace}
+ \newcommand{\sigprimepoly}{\ensuremath{\mathsf{S_{\sigma'}}}\xspace}
+ \newcommand{\idpoly}{\ensuremath{\mathsf{S_{ID}}}\xspace}
+\newcommand{\idpolyevala}{\ensuremath{\mathsf{\bar{s}_{ID1}}}\xspace}
+\newcommand{\sigpolyevala}{\ensuremath{\mathsf{\bar{s}_{\sigma1}}}\xspace}
+\newcommand{\sigpolyevalb}{\ensuremath{\mathsf{\bar{s}_{\sigma2}}}\xspace}
+\newcommand{\bctv}{\ensuremath{\mathsf{BCTV}}\xspace}
+\newcommand{\PI}{\ensuremath{\mathsf{PI}}\xspace}
+\newcommand{\PIb}{\ensuremath{\mathsf{PI_B}}\xspace}
+\newcommand{\PIc}{\ensuremath{\mathsf{PI_C}}\xspace}
+\newcommand{\dl}[1]{\ensuremath{\widehat{#1}}\xspace}
+\newcommand{\obgen}{\ensuremath{\mathcal O}\xspace}
+\newcommand{\PC}{\ensuremath{\mathscr{P}}\xspace}
+\newcommand{\permscheme}{\ensuremath{\sigma_\mathscr{P}}\xspace}
+
+	
+\newcommand{\selleft}{\ensuremath{\mathbf{q_L}}\xspace}
+\newcommand{\selright}{\ensuremath{\mathbf{q_R}}\xspace}
+\newcommand{\selout}{\ensuremath{\mathbf{q_O}}\xspace}
+\newcommand{\selmult}{\ensuremath{\mathbf{q_M}}\xspace}
+\newcommand{\selconst}{\ensuremath{\mathbf{q_C}}\xspace}
+\newcommand{\selectors}{\ensuremath{\mathcal{Q}}\xspace}
+\newcommand{\lvar}{\ensuremath{\mathbf{a}}\xspace}
+\newcommand{\vars}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\rvar}{\ensuremath{\mathbf{b}}\xspace}
+\newcommand{\ovar}{\ensuremath{\mathbf{c}}\xspace}
+\newcommand{\pubvars}{\ensuremath{\mathcal{I}}\xspace}
+\newcommand{\assignment}{\ensuremath{\mathbf{x}}\xspace}
+\newcommand{\constsystem}{\ensuremath{\mathscr{C}}\xspace}
+\newcommand{\relof}[1]{\ensuremath{\rel_{#1}}\xspace}
+\newcommand{\pubinppoly}{\ensuremath{\mathsf{PI}}\xspace}
+\newcommand{\sumi}[1]{\sum_{i\in[#1]}}
+\newcommand{\summ}[1]{\sum_{i\in[#1]}}
+\newcommand{\sumj}[1]{\sum_{j\in[#1]}}
+\newcommand{\ZeroH}{\ensuremath{Z_{H}} \xspace}
+\newcommand{\lpoly}{\ensuremath{\mathsf{a}}\xspace}
+\newcommand{\rpoly}{\ensuremath{\mathsf{b}}\xspace}
+\newcommand{\opoly}{\ensuremath{\mathsf{c}}\xspace}
+\newcommand{\idpermpoly}{\ensuremath{\mathsf{z}}\xspace}
+\newcommand{\lagrangepoly}{\ensuremath{\mathsf{L}}\xspace}
+\newcommand{\zeropoly}{\ensuremath{\mathsf{\ZeroH}}\xspace}
+\newcommand{\selmultpoly}{\ensuremath{\mathsf{q_M}}\xspace}
+\newcommand{\selleftpoly}{\ensuremath{\mathsf{q_L}}\xspace}
+\newcommand{\selrightpoly}{\ensuremath{\mathsf{q_R}}\xspace}
+\newcommand{\seloutpoly}{\ensuremath{\mathsf{q_O}}\xspace}
+\newcommand{\selconstpoly}{\ensuremath{\mathsf{q_C}}\xspace}
+\newcommand{\idcomm}{\ensuremath{[s_{\mathsf{ID1}}]_1}\xspace}
+\newcommand{\sigcomma}{\ensuremath{[s_{\mathsf{\sigma1}}]_1}\xspace}
+\newcommand{\sigcommb}{\ensuremath{[s_{\mathsf{\sigma2}}]_1}\xspace}
+\newcommand{\sigcommc}{\ensuremath{[s_{\mathsf{\sigma3}}]_1}\xspace}
+\newcommand{\selleftcomm}{\ensuremath{[q_\mathsf{L}]_1}\xspace}
+\newcommand{\selrightcomm}{\ensuremath{[q_\mathsf{R}]_1}\xspace}
+\newcommand{\seloutcomm}{\ensuremath{[q_\mathsf{O}]_1}\xspace}
+\newcommand{\selconstcomm}{\ensuremath{[q_\mathsf{C}]_1}\xspace}
+\newcommand{\selmultcomm}{\ensuremath{[q_\mathsf{M}]_1}\xspace}
+
+\newcommand{\multlinecomment}[1]{\directlua{-- #1}}
+    
+
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{thm}[lemma]{Theorem}
+\newtheorem{dfn}[lemma]{Definition}
+\newtheorem{remark}[lemma]{Remark}
+
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{corollary}[lemma]{Corollary}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\crct}{\ensuremath{\mathsf{C}}\xspace}
+\newcommand{\A}{\mathcal{A}}
+%\newcommand{\G}{\mathcal{G}}
+\newcommand{\Gr}{\mathbb{G}}
+%\newcommand{\com}{\textsf{com}}  Ariel defined equivalent that also works in math mode
+\newcommand{\cgen}{\text{cgen}}
+\newcommand{\poly}{\ensuremath{\mathsf{poly(\lambda)}}\xspace}
+\newcommand{\snark}{\ensuremath{\mathsf{snark(\lambda)}}\xspace}
+\newcommand{\grandprod}{\mathsf{prod}}
+\newcommand{\perm}{\mathsf{perm}}
+%\newcommand{\open}{\mathsf{open}}
+\newcommand{\update}{\mathsf{update}}
+\newcommand{\Prove}{\mathcal{P}}
+\newcommand{\Verify}{\mathcal{V}}
+\newcommand{\Extract}{\mathcal{E}}
+\newcommand{\Simulate}{\mathcal{S}}
+\newcommand{\Unique}{\mathcal{U}}
+\newcommand{\Rpoly}{\R{\poly}}
+\newcommand{\Ppoly}{\Prove{\poly}}
+\newcommand{\Vpoly}{\Verify{\poly}}
+\newcommand{\Psnark}{\prv}%{\Prove{\snark}}
+\newcommand{\Vsnark}{\ver}%{\Verify{\snark}}
+\newcommand{\Rprod}{\R{\grandprod}}
+\newcommand{\Pprod}{\Prove{\grandprod}}
+\newcommand{\Vprod}{\Verify{\grandprod}}
+\newcommand{\Rperm}{\R{\perm}}
+\newcommand{\Pperm}{\Prove{\perm}}
+\newcommand{\Vperm}{\Verify{\perm}}
+% \newcommand{\zw}[1]{{\textcolor{magenta}{Zac:#1}}}
+% \newcommand{\ag}[1]{{\textcolor{blue}{\emph{Ariel:#1}}}}
+\newcommand{\prob}{\ensuremath{\mathrm{Pr}}\xspace}
+\newcommand{\extprot}{\ensuremath{E_{\prot}}\xspace}
+\newcommand{\transcript}{\ensuremath{\mathsf{transcript}}\xspace}
+\newcommand{\extpc}{\ensuremath{E_{\PCscheme}}\xspace}
+\newcommand{\advpc}{\ensuremath{\mathcal A_{\PCscheme}}\xspace}
+\newcommand{\advprot}{\ensuremath{\mathcal A_{\prot}}\xspace}
+\newcommand{\protmany}{\ensuremath{ {\prot}_k}\xspace}
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\marlin}{\ensuremath{\mathsf{Marlin}}\xspace}
+\newcommand{\fractal}{\ensuremath{\mathsf{Fractal}}\xspace}
+\newcommand{\Rsnark}{\R{\snark}}
+\begin{document}
+    \maketitle
+
+\begin{abstract}
+	In this note we give a variant of the \plonk permutation argument\cite{plonk} that enables a publc input component. The implication of this is ultimately enabling the \plonk verifier to perform two field multiplications per public input, instead of a group exponentiation as in the original proof system.
+	
+\end{abstract}
+
+\section{Introduction}
+In the \plonk zk-SNARK \cite{plonk} a set of checks must be performed on committed polynomials $f_1,\ldots,f_d$ of the prover.
+One of these checks is the so-called ``public input check''
+where we check that a set of $\ell$ values $f_1(\hgen),\ldots,f_1(\hgen^{\ell})$ of the first polynomial are equal to values $\inp_1,\ldots,\inp_{\ell}$ given to the verifier.
+% the set of values of $f_1,\ldots,f_d$ on a subset $H={\hgen,\ldots,\hgen^n}\,in \F$ is invariant under a  known permutation $\pi$. Another is that a subset of values $f_1$
+% \cite{plonk} gave a polynomial protocol for checking whether values of a polynomial on a subset $H$ were invariant under a permutation $\pi$.
+
+In \cite{plonk} this requires 
+\begin{itemize}
+ \item 
+the prover computing the polynomial $\pubinppoly(X)\defeq \sum_ {i=1}^{\ell} -\inp_i \cdot L_i(X)$ on a set of $(d-1)n$ values using an FFT - requiring roughly  $dn\log n+\ell\log n$ field multiplications.
+\item The verifier computing $\pubinppoly(\chalpoint)$ on some $\chalpoint\in\F$, requiring roughly $\ell \log n$ multiplications.
+\end{itemize}
+We describe here an alternative method used in the barretenberg code base, where
+\begin{itemize}
+ \item 
+the prover doesn't require any computation beyond the permutation argument. 
+\item The verifier only requires $2\ell$ field multiplications. 
+\end{itemize}
+
+We achieve this by adding a public input componet in the permutation argument itself, allowing it to verify certain consistency with the public inputs at the same time as validating the permutation.
+The basic idea will be to ``unbalance'' the grand product from \cite{plonk} so that instead of accumulating to one,
+it will reach a randomized value dependent on the public input
+
+
+We use the ranged polynomial protocol terminology from \cite{plonk} to describe our protocol. See Section 4 of \cite{plonk} for an explanation.
+\section{Polynomial protocols for identifying permutations with a public input}\label{sec:permprotocol}
+ 
+We assume $H\in \F$ is a multiplicative subgroup of order $n+1$ with generator \hgen.
+We let $\dom \defeq \set{1,\hgen,\hgen^2,\ldots,\hgen^{n-1}}$
+
+For $i\in [n]$, we denote by $L_i(X)$ the element of \polysofdeg{n} with $L_i(\hgen^{i})=1$ and $L_i(a)=0$ for $a\in \dom$ different from  $\hgen^{i}$, i.e. \sett{L_i}{i\in [n]} is a Lagrange basis for $\dom$.
+% %\footnote{It would be more natural to work with a basis for \dom, but it is more efficient to work with a basis for $H$, and Claim \ref{clm:pointcheck} implies this is also fine.}
+
+
+
+
+For $f\in \polysofdeg{d}$ and a permutation $\sigma :[n]\to [n]$,
+we write $g=\sigma(f)$ if for each $i\in [n]$, $g(\hgen^{i}) = f(\hgen^{\sigma(i)})$. \footnote{Note that according to this definition there are multiple $g$ with $g=\sigma(f)$. Intuitively, we think of \sigof{f} as the unique such $g\in \polysofdeg{n}$, but do not define this formally to avoid needing to enforce this degree bound for efficiency reasons.}
+
+We present a ranged polynomial protocol enabling \prvpoly to prove that
+$g=\sigof{f}$.
+
+We present a version of the protocol that also supports public inputs.
+That is for $i\in [\ell]$, it will also check that $f(\hgen^i) = \inp_i$.
+
+Before proceeding, given the permutation $\sig$ on $[n]$, we define $\sig':[n]\to \F$ as follows.
+We predefine some subset $\set{\zeta_1,\ldots,\zeta_\ell}$ of distinct elements of \F disjoint from $[n]$.
+We define $\sig'(i) = \zeta_i$ for $i\in [\ell]$ and otherwise $\sig'(i) =\sig(i)$.
+
+
+
+\paragraph{Preprocessed polynomials:}
+The polynomial $\idpoly\in \polysofdeg{n}$ defined by 
+$\idpoly(\hgen^{i}) = i$ for each $i\in [n]$ and $\sigprimepoly \in \polysofdeg{n}$ defined by
+$\sigprimepoly(\hgen^{i}) = \sig'(i)$ for each $i\in [n]$.
+\paragraph{Inputs:}
+$f,g\in \polysofdeg{n}$. Public input $\inp\in \F^\ell$.
+\paragraph{Protocol:}
+\begin{enumerate}
+ \item\label{item:betgamma} \verpoly chooses random $\beta,\gamma \in\F$ and sends them to \prvpoly.
+ \item Let $f'\defeq f+\beta\cdot  \idpoly +\gamma, g'\defeq g+\beta\cdot \sigpoly + \gamma$.
+That is, for $i\in [n]$
+ \[f'(\hgen^i) = f(\hgen^i) + \beta\cdot i + \gamma,
+ g'(\hgen^i) = g(\hgen^i) + \beta\cdot \sigma'(i) + \gamma\]
+ \item \prvpoly computes $Z \in \polysofdeg{n+1}$, such that 
+ $Z(1) = 1$; and for $i\in \set{1,\ldots,n+1}$
+ \[Z(\hgen^i)  = \prod_{0\leq j <i} f'(\hgen^j)/g'(\hgen^j).\]
+ (If one of the product elements is undefined, which happens w.p. \negl over $\gamma$, the protocol is aborted\footnote{This abort ruins the perfect completeness of the protocol. If one wishes to preserve perfect completeness, the protocol can be altered such that if for some $i$, $g'(\hgen^i)=0$, \prvpoly proves this to \verpoly, and \verpoly accepts in this case. This adds a \negl factor to the soundness error.}.)
+ \item \prvpoly sends $Z$ to \ideal.
+ \item \verpoly computes the term 
+ \[\pubinputdelta\defeq \frac{\prod_{i\in [\ell]}(\inp_i +\beta\sigma(i) + \gamma)} {\prod_{i\in [\ell]} (\inp_i + \beta \sigma'(i) + \gamma)}\]
+ \item \verpoly checks if for all $\x\in \dom$
+ \begin{enumerate}
+  \item $L_1(\x) (Z(\x)-1) = 0$.
+  \item $Z(\x)f'(\x) = g'(\x)Z(\x\cdot \hgen)$.
+\item $L_n(\x)(Z(\x\cdot \hgen)-\pubinputdelta) = \inp$.
+  \end{enumerate}
+and outputs \acc iff all checks hold.
+\end{enumerate}
+
+\subsection{Analysis}
+
+
+For simplicity we use the notation $f_i\defeq f(\hgen^{i-1})$ below.
+Given fixed $f\in\polysofdeg{d}$ and $\inp\in \F^\ell$,
+define
+\begin{itemize}
+
+\item $N \defeq \prod_{i\in [n]} (f_i + \beta\cdot i +\gamma)$
+% \item $D \defeq \prod_{i\in [n]} (f_i + \beta\cdot \sigma(i) +\gamma)$
+\item $D'_\ell \defeq \prod_{i\in [\ell]} (f_i + \beta\cdot \sigma'(i) +\gamma)$
+\item $D_{n-\ell} \defeq \prod_{i\in [\ell+1..n]} (f_i + \beta\sigma(i) +\gamma),$
+\item  $N_{\inp} \defeq \prod_{i\in \ell}(\inp_i + \beta\sigma(i) +\gamma)$
+\item $D_{\inp} \defeq \prod_{i\in \ell}(\inp_i + \beta\sigma'(i) +\gamma)$
+
+\end{itemize}
+
+
+The correctness of the protocol follows from
+\begin{lemma}\label{lem:permwithpub}
+ Assume that $\sett{\sigma'(i)}{i\in [\ell]}$ is disjoint from \sett{\sigma(i)}{i\in [n]} and consists of distinct values.
+  
+
+
+If
+ \begin{enumerate}
+  \item $f=  \sigma(f)$ and 
+  \item $f_i =\inp_i$ for some $i\in [\ell]$ 
+ \end{enumerate}
+ then for any $\beta,\gamma \in\F$
+ \[N/(D'_\ell\cdot D_{n-\ell}) =N_\inp/D_\inp\]
+
+ 
+
+ Suppose that either
+ \begin{enumerate}
+  \item $f\neq \sigma(f)$ or 
+  \item $f_i \neq \inp_i$ for some $i\in [\ell]$ 
+ \end{enumerate}
+Then e.w.p $2(n+\ell)/|\F|$ over $\beta,\gamma \in \F$.
+\[N/(D'_\ell\cdot D_{n-\ell}) \neq N_\inp/D_\inp\]
+\end{lemma}
+\begin{proof}
+  Clearing denominators, and ignoring an $(n+\ell)/\sizef$ probability of denominators being zero, the equality above is equivalent to
+  \[N \cdot D_\inp = N_\inp \cdot D'_\ell \cdot D_{n-\ell} \]
+  which is the same as 
+  
+  \[ \prod_{i\in [n]} (f_i + \beta\cdot i +\gamma) \prod_{i\in [\ell]}(\inp_i + \beta\sigma'(i) +\gamma) = \prod_{i\in [\ell]}(\inp_i + \beta\sigma(i) +\gamma) \prod_{i\in [\ell]} (f_i + \beta\sigma'(i) +\gamma) \prod_{i\in [\ell+1..n]} (f_i + \beta\sigma(i) +\gamma)\]
+  
+  When $f=\sigma(f)$ and $f_i =\inp_i$ for $i\in [\ell]$,
+ inspection shows the linear factors on both sides are the same.
+  
+ For the other direction, assume first $f_i\neq \inp_i$ for some $i\in [\ell]$.
+ Think of both sides as bi-variate polynomials in $\beta,\gamma$.
+ Recall we have unique decomposition to irreducible factors in $\F[\beta,\gamma]$. Since both sides are decomposed to linear factors, this means that if we show a factor only appears on one side, the polynomials are different and thus disagree e.w.p $(n+\ell)/\sizef$.
+  Then the factor $(\inp_i + \beta\sigma'(i) +\gamma)$ appears on LHS but not RHS.
+  
+  Now assume $f_i=\inp_i$ for each $i\in [\ell]$ and  for some $i\in [n]$,
+  $f_i \neq f_{\sig(i)}$.
+  Then the factor $f_i + \beta\sigma(i) +\gamma$ appears in the RHS but not LHS.
+  
+  \end{proof}
+
+\begin{lemma}\label{lem:permprotocol}
+Fix $f,g \in \polysofdeg{d}$.
+For any strategy of \prvpoly, the probability of \verpoly outputting \acc in the above protocol when $g\neq \sigof{f}$ is \negl.
+\end{lemma}
+\begin{proof}
+ Suppose that $g\neq \sigof{f}$. By claim \ref{clm:randpermO}, by Lemma \ref{lem:permwithpub} e.w.p \negl over the choice of $\beta,\gamma\in \F$, 
+ \[a\defeq \prod_{i\in [n]}f'_i/g'_i \neq \pubinputdelta.\]
+ Assume $\beta,\gamma$ were chosen such that the above holds, and also such that $g'_i\neq 0$ for all $i\in [n]$. We show \verpoly rejects; specifically, that assuming both identities \verpoly checks hold leads to contradiction.
+ 
+ From the first check we know that $Z(1) = 1$.
+From the second check we can show inductively, that for each $i\in [n]$
+\[Z(\hgen^{i}) = \prod_{0\leq j < i} \frac{f'(\hgen^j)}{g'(\hgen^j)}.\]
+In particular, $Z(\hgen^{n})=a$.
+From the last check we know that $Z(\hgen^n)=\pubinputdelta\neq a$;
+hence we've arrived at a contradiction.
+\end{proof}
+
+
+
+As in \cite{plonk}, we give the version of the argument for multiple polynomials, though it is straightforward given the above.
+\subsection{Checking ``extended''  permutations}\label{subsec:extperm}
+In our protocol, we in fact need to check a permutation ``across'' the values of several polynomials.
+Let us define this setting formally.
+Suppose we now have mutliple polynomials $f_1,\ldots,f_k\in \polysofdeg{d}$ and a permutation $\sigma:[kn]\to [kn]$.
+For $(g_1,\ldots,g_k)\in \left(\polysofdeg{d}\right)^k$, we say that
+$(g_1,\ldots,g_k)=\sigof{f_1,\ldots,f_k}$ if the following holds.
+
+Define the sequences $(f_{(1)},\ldots, f_{(kn)}),(g_{(1)},\ldots,g_{(kn)}) \in \F^{kn}$
+by 
+\[f_{((j-1)\cdot n + i)} \defeq f_j(\hgen^{i-1}), g_{((j-1)\cdot n + i)} \defeq g_j(\hgen^{i-1}),\]
+for each $j\in [k], i\in [n]$.
+Then we have $g_{(\ell)} = f_{(\sigma(\ell))}$ for each $\ell \in [kn]$.
+
+
+
+\paragraph{Preprocessed polynomials:}
+
+
+The polynomials $\idpoly_1,\ldots,\idpoly_k \in \polysofdeg{n}$ defined by $\idpoly_j(\hgen^i) =(j-1)\cdot n + i$ for each $i\in [n]$.
+
+\emph{In fact, only $\idpoly=\idpoly_1$ is actually included in the set of preprocessed polynomials, as $\idpoly_j(x)$ can be computed as $ \idpoly_j(x) = \idpoly(x) + (j-1)\cdot n$.}
+
+
+Let $(\zeta_1,\ldots,\zeta_\ell)$ be a set of $\ell$ distinct elements in \F disjoint from $[kn]$.
+
+For each $j\in [k]$, $\sigpoly_j \in \polysofdeg{n}$, defined by
+$\sigpoly_j(\hgen^{i}) = \sigma((j-1)\cdot n + i)$ for each $i\in [n]$;
+with the exception that for $i\in [\ell]$, we set $\sigpoly_1(\hgen^{i}) = \zeta_i$.
+
+
+\paragraph{Inputs: $f_1,\ldots,f_k,g_1,\ldots,g_k \in \polysofdeg{n}$}
+\paragraph{Protocol:}
+\begin{enumerate}
+ \item\label{item:betgamma} \verpoly chooses random $\beta,\gamma \in\F$ and sends to \prvpoly.
+ \item Let $f_j'\defeq f_j+\beta\cdot  \idpoly_j +\gamma$, and $ g'_j\defeq g_j+\beta\cdot \sigpoly_j + \gamma$.
+That is, for $j\in [k],i\in [n]$
+ \[f'_j(\hgen^{i-1}) = f_j(\hgen^{i-1}) + \beta((j-1)\cdot n + i) + \gamma,
+ g'_j(\hgen^{i-1}) = g_j(\hgen^{i-1}) + \beta\cdot \sigma((j-1)\cdot n + i) + \gamma\]
+\item Define $f',g' \in \polysofdeg{kn}$ by 
+\[f'(X) \defeq \prod_{j\in [k]} f'_j(X),g'(X) \defeq \prod_{j\in [k]} g'_j(X).\]
+ 
+ \item \prvpoly computes $Z \in \polysofdeg{n+1}$, such that 
+ $Z(1) =1$; and for $i\in \set{1,\ldots,n}$
+ \[Z(\hgen^i)  = \prod_{0\leq j <i} f'(\hgen^j)/g'(\hgen^j).\]
+ (The case of one of the products being undefined is handled as in the previous protocol.)
+ 
+ 
+ \item \prvpoly sends $Z$ to \ideal.
+ \item \verpoly checks if for all $a\in \dom$
+ \begin{enumerate}
+  \item $L_1(a) (Z(a)-1) =0$.
+  \item $Z(a)f'(a) = g'(a)Z(a\cdot \hgen)$.
+  \item $L_n(a)(Z(a)-\pubinputdelta)=0$.
+ \end{enumerate}
+ and outputs \acc iff all checks hold.
+\end{enumerate}
+\begin{lemma}\label{lem:permprotocolmany}
+Fix any $f_1,\ldots,f_k,g_1,\ldots g_k \in \polysofdeg{d}$ and permutation $\sigma$ on $[kn]$ as inputs to the above protocol \protmany.
+Suppose that $(g_1,\ldots,g_k) \neq \sigof{f_1,\ldots,f_k}$.
+Then, for any strategy of \prvpoly, the probability of \verpoly outputting \acc is \negl.
+
+% Moreover, in the terminology of Lemma \ref{lem:ideal-to-AGM}, we have $t^*(\protmany)=2,\proverexp(\protmany) =4n+2, D(\protmany) = 4n+2$.
+\end{lemma}
+\begin{proof}
+ $(g_1,\ldots,g_k) \neq \sigof{f_1,\ldots,f_k}$ implies that with high probability over $\beta,\gamma \in \F$ the product $F$ of the values 
+ \sett{f'_j(\hgen^i)}{j\in [k],i\in [n]} is different from the product $G$ of the values
+ \sett{g'_j(\hgen^i)}{j\in [k],i\in [n]}.
+ Note now that 
+    \[F=\prod_{i\in [n]} f'(\hgen^{i-1}), G=\prod_{i\in [n]} g'(\hgen^{i-1}),\]
+ and that the next steps of the protocol are identical to those in the previous protocol,
+ and as analyzed there - exactly check if these products are equal.
+\end{proof}
+ 
+ \section{The final protocol, rolled out}\label{sec:finalconst}
+ For the reader's convenience we present the full \plonk zk-SNARK from \cite{plonk} when the method for handling public inputs is altered to the one above.
+
+ Adding zero-knowledge was not explicitly discussed so far, but is implemented here:
+ All that is needed is essentially adding random multiples of $Z_{H}$ to the witness based-polynomials. This does not ruin satisfiability, but creates a situation where the values are either completely uniform or determined by verifier equations.
+ 
+ 
+
+ We explicitly define the subet $H\subset \F$ as containing the $n$ first powers of an $n+1$'th root of unity in $\F_p$ $\omega$ . i.e: $H = \{1, \omega, \ldots,\omega^{n-1}\}$.
+ \\
+ \\
+ We assume that the number of gates in a circuit is no more than $n$.
+ \\
+ \\
+ We also include an optimisation suggested by Vitalik Buterin, to define the identity permutations through degree-1 polynomials. The identity permutations must map each wire value to a unique element $\in$ \F. This can be done by defining $\idpoly_1(X) = X, \idpoly_2(X) = k_1X, \idpoly_3(X) = k_2X$, where $k_1, k_2$ are quadratic non-residues $\in \F$.
+ This effectively maps each wire value to a root of unity in $H$, with right and output wires having an additional multiplicative factor of $k_1, k_2$ applied respectively.
+ By representing the identity permutation via degree-1 polynomials, their evaluations can be directly computed by the verifier. This reduces the size of the proof by 1 \F element, as well as reducing the number of Fast-Fourier-Transforms required by the prover.
+\\
+\\
+Finally, in the following protocol we use $H$ to refer to a hash function, where $H:\{0,1\}^*\to \{0,1\}^{\ell}$ is an efficiently computable hash function that takes arbitrary length inputs and returns $\ell$-bit outputs  
+
+\subsection{Polynomials that define a specific circuit}
+
+The following polynomials, along with integer $n$, uniquely define a universal SNARK circuit:
+
+\begin{itemize}
+	\item $\selmultpoly(X), \selleftpoly(X), \selrightpoly(X), \seloutpoly(X), \selconstpoly(X)$, the `selector' polynomials that define the circuit's arithmetisation
+	\item $\idpoly_1(X) = X, \idpoly_2(X) = k_1X, \idpoly_3(X) = k_2X$: the identity permutation applied to $\lvar, \rvar, \ovar$. $k_1, k_2\in \F$ are chosen such that $H,k1\cdot H,k2\cdot H$ are distinct cosets of $H$ in $\F^*$, and thus consist of $3n$ distinct elements. (For example, when $\omega$ is a quadratic residue in $\F$, take $k_1$ to be any quadratic non-residue, and $k_2$ to be a  quadratic non-residue not contained in $k_1\cdot H$.)
+	\item $\sigpoly_1(X), \sigpoly_2(X), \sigpoly_3(X)$: the copy permutation applied to $\lvar, \rvar, \ovar$.
+	We the exception that $\sigpoly_1(\hgen^i) = \zeta_i$ for $i\in [\ell]$, where \set{z_1,\ldots,z_\ell} are distinct and disjoint from the values $H\cup k_1\cdot H\cup k_2\cdot H$.
+	\item $n$, the total number of arithmetic gates for a given circuit. This is used by $\Vsnark$ to compute the vanishing polynomial $\zeropoly(X) = {X^{n} - 1}$
+\end{itemize}
+
+\subsection{Commitments to wire values}
+
+For the following protocol we describe a proof relation for a universal SNARK circuit containing $n$ arithmetic gates. The witnesses to the proof are the wire value witnesses $(w_i)_{i=1}^{3n}$. The commitments $[a]_1, [b]_1, [c]_1$ are computationally binding Kate polynomial commitments to the wire value witnesses, utilizing a structured reference string containing the group elements $(x \cdot [1]_1, \ldots , x^{n} \cdot [1]_1)$. 
+
+\subsection{The un-rolled universal SNARK proof relation}
+
+
+$$\Rsnark=\left\{\begin{array}{c} (x,w,crs)=((w_i)_{i \in [\ell]}), ((w_i)_{i=1, i \notin [\ell]}^{3n}), \\
+(q_{Mi}, q_{Li}, q_{Ri}, q_{Oi}, q_{Ci})_{i=1}^n, n, \sigma(x)) \\
+\text{For all } i\in \{1,\ldots,3n\}: w_i \in \F_p,  
+\text{ and for all } i \in \{1, \ldots, n \}:\\ w_i w_{n+i} q_{Mi} + w_i q_{Li} + w_{n+i} q_{Ri}+ w_{2n+i} q_{Oi} + q_{Ci} = 0 \\
+\text{and for all } i \in \{1, \ldots, 3n \}: w_i = w_{\sigma(i)}
+\end{array} \right\}$$
+
+
+
+
+
+\subsection{The protocol}
+
+We describe the protocol below as a non-interactive protocol using the Fiat-Shamir hueristic.
+For this purpose we always denote by \transcript the concatenation of the common preprocessed input, and public input, and the proof elements written by the prover up to a certain point in time.
+We use \transcript for obtaining random challenges via Fiat-Shamir. One can alternatively, replace all points where we write below ``compute challenges'', by the verifier sending random field elements, to obtain the interactive protocol from which we derive the non-interactive one.
+\begin{description}
+	\item[Common preprocessed input:]
+	$$\begin{array}{l}n, (x \cdot [1]_1, \ldots, {x^{n+2}} \cdot [1]_1), (q_{Mi}, q_{Li}, q_{Ri}, q_{Oi}, q_{Ci})_{i=1}^n, \sigma(X), \\
+	\selmultpoly(X) = \sum_{i=1}^nq_{Mi}\lagrangepoly_i(X), \\
+	\selleftpoly(X) = \sum_{i=1}^nq_{Li}\lagrangepoly_i(X), \\
+	\selrightpoly(X) = \sum_{i=1}^nq_{Ri}\lagrangepoly_i(X), \\ \seloutpoly(X) = \sum_{i=1}^nq_{Oi}\lagrangepoly_i(X), \\ \selconstpoly(X) = \sum_{i=1}^nq_{Ci}\lagrangepoly_i(X), \\
+	\sigpoly_1(X) =  \sum_{i=1}^\ell \zeta_i \lagrangepoly_i(X) + \sum_{\ell+1\leq i \leq n} \sigma(i) \lagrangepoly_i(X), \\ \sigpoly_2(X) = \sum_{i=1}^n \sigma(n + i) \lagrangepoly_i(X), \\ \sigpoly_3(X) = \sum_{i=1}^n \sigma(2n + i) \lagrangepoly_i(X)\\ \
+\end{array}$$
+	\item[Public input:] 	$\ell, \vecc{w_i}{i\in [\ell]}$
+	\item[\underline{Prover algorithm:}] \ \\
+	\item[Prover input:] $\vecc{w_i}{i\in [3n]}$
+	
+	\end{description}
+	
+	
+	\noindent
+	\paragraph{\textbf{Round 1:}} \ \\
+	Generate random blinding scalars $(b_1, \ldots, b_{9}) \in \F_p$ \\
+	Compute wire polynomials $\lpoly(X), \rpoly(X), \opoly(X):$
+	$$
+	\lpoly(X) = (b_1X + b_2)\zeropoly(X) + \sum_{i=1}^nw_i\lagrangepoly_i(X)
+	$$
+	$$
+	\rpoly(X) = (b_3X + b_4)\zeropoly(X) + \sum_{i=1}^nw_{n+i}\lagrangepoly_i(X)
+	$$
+	$$
+	\opoly(X) = (b_5X + b_6)\zeropoly(X) + \sum_{i=1}^nw_{2n+i}\lagrangepoly_i(X)
+	$$
+	Compute $[a]_1 := \enc1{\lpoly(x)}, [b]_1 := \enc1{\rpoly(x)}, [c]_1 := \enc1{\opoly(x)}$
+	\\ \\
+	First output of $\Psnark$ is $([a]_1, [b]_1, [c]_1)$.
+	\\ \\
+	\noindent
+	\paragraph{\textbf{Round 2:}} \ \\
+	Compute permutation challenges $(\beta, \gamma) \in \F_p:$ \[\beta = H(\transcript,0), \gamma = H(\transcript, 1) \]
+	
+Compute permutation polynomial $\idpermpoly(X):$
+	\begin{adjustwidth}{-50mm}{-50mm}
+	$$
+	\begin{array}{c}
+	\idpermpoly(X) = (b_7X^2 + b_8X + b_9)\zeropoly(X) \\
+	+ \lagrangepoly_1(X) + \sum_{i=1}^{n} \left(
+	\lagrangepoly_{i+1}(X) \prod_{j=1}^i\frac{(w_j + \beta \omega^{j-1} + \gamma)(w_{n+j} + \beta k_1 \omega^{j-1} + \gamma)(w_{2n + j} + \beta k_2 \omega^{j-1} + \gamma)}{(w_j + \sigma(j)\beta + \gamma)(w_{n+j} + \sigma(n+j)\beta + \gamma)(w_{2n+j} + \sigma(2n+j)\beta + \gamma)}
+	\right)
+	\end{array}
+	$$
+	\end{adjustwidth}
+	Compute $[z]_1 := \enc1{\idpermpoly(x)}$ \\
+	\\ \\
+	Second output of $\Psnark$ is $([z]_1)$
+	\\ \\
+	\noindent
+	\paragraph{\textbf{Round 3:}} \ \\
+	Compute quotient challenge $\alpha \in \F_p:$ \[ \alpha = H(\transcript) \]
+
+	Compute the element $\pubinputdelta \defeq \frac{\prod_{i\in [\ell]} (w_i + \beta \sigma(i) +\gamma}{w_i + \beta \cdot \zeta_i + \gamma}$.
+	Compute quotient polynomial $\mathsf{t}(X):$
+	\begin{adjustwidth*}{-22mm}{-22mm}
+	$$
+	\begin{array}{l}
+	\mathsf{t}(X) = \\
+	\ \ \ \left( \lpoly(X)\rpoly(X)\mathsf{q_M}(X) + \lpoly(X)\mathsf{q_L}(X) + \rpoly(X)\mathsf{q_R}(X) + \opoly(X)\mathsf{q_O}(X) + \mathsf{q_C}(X) \right) \frac{1}{\zeropoly(X)} \\
+	+ \left((\lpoly(X) + \beta X + \gamma)(\rpoly(X) + \beta k_1 X + \gamma)(\opoly(X) + \beta k_2 X + \gamma )\idpermpoly(X) \right) \frac{\alpha}{\zeropoly(X)} \\
+	- \left((\lpoly(X) + \beta \sigpoly_1(X) + \gamma)(\rpoly(X) + \beta \sigpoly_2(X) + \gamma)(\opoly(X) + \beta \sigpoly_3(X) + \gamma) \idpermpoly(X\omega) \right)\frac{\alpha}{\zeropoly(X)} \\
+	+ \left(\idpermpoly(X) - 1 \right) \lagrangepoly_1(X) \frac{\alpha^2}{\zeropoly(X)}\\
++   (\idpermpoly(X\omega)-\pubinputdelta)  \lagrangepoly_n(X) \frac{\alpha^3}{\zeropoly(X)}	\end{array}
+	$$
+	\end{adjustwidth*}
+	Split $t(X)$ into degree$<n$ polynomials $t_{lo}(X), t_{mid}(X), t_{hi}(X)$, where
+	$$
+	t(X) = t_{lo}(X) + X^nt_{mid}(X) + X^{2n}t_{hi}(X)
+	$$
+	Compute $[t_{lo}]_{1} := \enc1{\mathsf{t_{lo}}(x)}, [t_{mid}]_1 := \enc1{\mathsf{t_{mid}}(x)}, [t_{hi}]_1 := \enc1{\mathsf{t_{hi}}(x)}$ \\ \\
+	Third output of $\Psnark$ is $([t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1)$
+	\\ \\
+	\noindent
+	\paragraph{\textbf{Round 4:}} \ \\Compute evaluation challenge $\chalpoint \in \F_p:$ \[ \chalpoint = H(\transcript)\]
+	Compute opening evaluations:
+	$$
+	\begin{array}{c}
+	\bar{a} = \lpoly(\chalpoint), \bar{b} = \rpoly(\chalpoint), \bar{c} = \opoly(\chalpoint), \sigpolyevala = \sigpoly_1(\chalpoint), \sigpolyevalb = \sigpoly_2(\chalpoint), \\
+	\bar{t} = \mathsf{t}(\chalpoint), \bar{z}_\omega = \idpermpoly(\chalpoint \omega)
+	\end{array}
+	$$
+	Compute linearisation polynomial $\mathsf{r}(X):$
+	$$
+	\begin{array}{l}
+	\mathsf{r}(X) = \\
+	\ \ \ \left( \bar{a} \bar{b} \cdot \mathsf{q_M}(X) + \bar{a} \cdot \mathsf{q_L}(X) + \bar{b} \cdot \mathsf{q_R}(X) + \bar{c} \cdot \mathsf{q_O}(X) + \mathsf{q_C}(X) \right) \\
+	+ \left( (\bar{a} + \beta \chalpoint + \gamma)(\bar{b} + \beta k_1 \chalpoint + \gamma)(\bar{c} + \beta k_2 z + \gamma) \cdot \idpermpoly(X) \right)\alpha \\
+	- \left( (\bar{a} + \beta \sigpolyevala + \gamma)(\bar{b} + \beta \sigpolyevalb + \gamma)\beta \bar{z}_\omega \cdot \sigpoly_3(X)\right)\alpha \\
+	+ \left( \idpermpoly(X) \right) \lagrangepoly_1(z)\alpha^2 \\
+	\end{array}
+	$$
+	Compute linearisation evaluation $\bar{r} = \mathsf{r}(\chalpoint)$ \\ \\
+	Fourth output of $\Psnark$ is $(\bar{a}, \bar{b}, \bar{c}, \sigpolyevala, \sigpolyevalb, \bar{z}_\omega, \bar{t}, \bar{r})$ \\ \\
+	\noindent
+	\paragraph{\textbf{Round 5:}}\ \\
+	Compute opening challenge $v \in \F_p:$
+	$$
+	v = H(\transcript)
+	$$
+	Compute opening proof polynomial $\mathsf{W_\chalpoint}(X):$
+	$$
+	\mathsf{W_\chalpoint}(X) = \frac{1}{X - \chalpoint} \left(
+	\begin{array}{l}
+	(\mathsf{t_{lo}}(X) + \chalpoint^n \mathsf{t_{mid}}(X) + \chalpoint^{2n}\mathsf{t_{hi}}(X) - \bar{t}) \\
+	+ v(\mathsf{r}(X) - \bar{r}) \\
+	+ v^2(\lpoly(X) - \bar{a}) \\
+	+ v^3(\rpoly(X) - \bar{b}) \\
+	+ v^4(\opoly(X) - \bar{c}) \\
+	+ v^5(\sigpoly_1(X) - \sigpolyevala) \\
+	+ v^6(\sigpoly_2(X) - \sigpolyevalb) \\
+	\end{array}
+	\right)
+	$$
+	Compute opening proof polynomial $\mathsf{W_{\chalpoint\omega}}(X):$
+	$$
+	\mathsf{W_{\chalpoint \omega}}(X) = \frac{(\idpermpoly(X) - \bar{z}_\omega)}{X - \chalpoint \omega}
+	$$
+	Compute $[W_\chalpoint]_1 := \enc1{\mathsf{W_\chalpoint}(x)}, [W_{\chalpoint \omega}]_1 := \enc1{\mathsf{W_{\chalpoint \omega}}(x)}$ \\ \\
+
+	The fifth output of $\Psnark$ is $([W_\chalpoint]_1, [W_{\chalpoint\omega}]_1)$
+	\\ \\
+	Return
+	$$
+	\pi_{\mathsf{SNARK}} = \left(
+	\begin{array}{c}
+	[a]_1, [b]_1, [c]_1, [z]_1, [t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1, [W_\chalpoint]_1, [W_{\chalpoint \omega}]_1, \\
+	\bar{a}, \bar{b}, \bar{c}, \sigpolyevala, \sigpolyevalb, \bar{r}, \bar{z}_\omega \\
+	\end{array}
+	\right)
+	$$
+	
+	Compute multipoint evaluation challenge $u \in \F_p:$
+	$$
+	u = H(\transcript)
+	$$
+
+	We now describe the verifier algorithm in a way that minimizes the number of \G1 scalar multiplications.
+	\begin{description}
+	\item[\underline{Verifier algorithm}] \ \\
+	\item[Verifier preprocessed input:] 
+	$$
+	\begin{array}{l}
+ \selmultcomm := \selmultpoly(x) \cdot [1]_1, \selleftcomm := \selleftpoly(x) \cdot [1]_1, \selrightcomm := \selrightpoly(x) \cdot [1]_1, \seloutcomm := \seloutpoly(x) \cdot [1]_1, \\
+	\sigcomma := \sigpoly_1(x) \cdot [1]_1, \sigcommb := \sigpoly_2(x) \cdot [1]_1, \sigcommc := \sigpoly_3 (x)\cdot [1]_1 \\
+	x \cdot [1]_2
+	\end{array}
+	$$
+	\item[$\Vsnark((w_i)_{i \in {[}\ell{]}}, \pi_{\mathsf{SNARK}})$:] \ \\
+\end{description}
+\noindent
+\begin{enumerate}
+ \item 	Validate $([a]_1, [b]_1, [c]_1, [z]_1, [t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1, [W_z]_1, [W_{z\omega}]_1) \in \G1$.
+\item	Validate $(\bar{a}, \bar{b}, \bar{c}, \sigpolyevala, \sigpolyevalb, \bar{r}, \bar{z}_\omega) \in \F_p^{7}$.
+\item	Validate $(w_i)_{i \in [\ell]} \in \F_p^{\ell}$.
+	\item Compute challenges $\beta, \gamma,\alpha,\chalpoint,v,u \in \F_p$ as in prover description, from the common inputs, public input, and elements of $\pi_{\mathsf{SNARK}}$. 
+	\item Compute the element \pubinputdelta as in prover description.
+\[\pubinputdelta \defeq \frac{\prod_{i\in [\ell]} (w_i + \beta \sigma(i) +\gamma)}{\prod_{i\in [\ell]}  (w_i + \beta \cdot \zeta_i + \gamma)}.\]	
+% 	$$
+% 	\beta = H([a]_1, [b]_1, [c]_1, (w_i)_{i \in [\ell]}), \gamma = H([a]_1, [b]_1, [c]_1, (w_i)_{i \in [\ell]}, \beta)
+% 	$$
+% 	Compute quotient challenge $\alpha \in \F_p:$
+% 	$$
+% 	\alpha = H([a]_1, [b]_1, [c]_1, [z]_1)
+% 	$$
+% 	Compute evaluation challenge $z \in \F_p:$
+% 	$$
+% 	z = H([a]_1, [b]_1, [c]_1, [z]_1, [t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1)
+% 	$$
+	\item Compute zero polynomial evaluation $\zeropoly(\chalpoint) = (\chalpoint^n - 1)/(\chalpoint- \hgen^{n})$.
+\item	Compute Lagrange polynomial evaluations $\lagrangepoly_1(\chalpoint) = \frac{\zeropoly(\chalpoint)}{n(\chalpoint - 1)}$; $\lagrangepoly_n(\chalpoint) = \frac{\zeropoly(\chalpoint)}{n(\chalpoint - \omega^{n-1})}$
+
+% \item	Compute public input polynomial evaluation $\pubinppoly(\chalpoint) = \sum_{i \in \ell}w_i \lagrangepoly_i(\chalpoint)$.
+
+\item	Compute quotient polynomial evaluation $$\bar{t} = \frac{\bar{r} 
+	-((\bar{a} + \beta \sigpolyevala + \gamma)(\bar{b} + \beta \sigpolyevalb + \gamma)(\bar{c} + \gamma)\bar{z}_\omega)\alpha
+	- \lagrangepoly_1(\chalpoint)\alpha^2 + (\bar{z}_\omega -\pubinputdelta)  \lagrangepoly_n(\chalpoint) \alpha^3}{\zeropoly(\chalpoint) }$$.
+% 	Compute opening challenge $v \in \F_p:$
+% 	$$
+% 	v = H([a]_1, [b]_1, [c]_1, [z]_1, [t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1, \bar{a}, \bar{b}, \bar{c}, \sigpolyevala, \sigpolyevalb, \bar{z}, \bar{t}, \bar{r})
+% 	$$
+% 	Compute multipoint evaluation separation challenge $u \in \F_p:$
+% 	$$
+% 	u = H([a]_1, [b]_1, [c]_1, [z]_1, [t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1, [W_z]_1, [W_{z \omega^{-1}}]_1, \bar{a}, \bar{b}, \bar{c}, \sigpolyevala, \sigpolyevalb,\bar{z}, \bar{t}, \bar{r})
+% 	$$
+
+
+\item	Compute partial opening commitment $[D]_1 := v \cdot [r]_1 + u \cdot [z]_1:$
+	$$
+	[D]_1 :=
+	\begin{array}{l}
+	\bar{a}\bar{b} v \cdot \selmultcomm + \bar{a} v \cdot \selleftcomm + \bar{b}v \cdot \selrightcomm + \bar{c}v \cdot \seloutcomm +  v \cdot \selconstcomm \\
+	+ \left( (\bar{a} + \beta \chalpoint + \gamma)(\bar{b} + \beta k_1 \chalpoint + \gamma)(\bar{c} + \beta k_2 \chalpoint + \gamma)\alpha v + \lagrangepoly_1(\chalpoint)\alpha^2 v + u\right) \cdot [z]_1\\
+	-(\bar{a} + \beta \sigpolyevala + \gamma)(\bar{b} + \beta \sigpolyevalb + \gamma)\alpha v\beta \bar{z}_\omega \sigcommc \end{array}
+	$$
+
+	
+	\item	Compute batch opening commitment $[F]_1:$
+	$$
+	[F]_1 := 	\begin{array}{l}
+	[t_{lo}]_1
+	+ \chalpoint^n \cdot [t_{mid}]_1
+	+ \chalpoint^{2n} \cdot [t_{hi}]_1 \\
+	+ [D]_1
+	+ v^2 \cdot [a]_1
+	+ v^3 \cdot [b]_1
+	+ v^4 \cdot [c]_1
+	+ v^5 \cdot \sigcomma
+	+ v^6 \cdot \sigcommb
+	\end{array}
+	$$
+\item 	Compute batch evaluation commitment $[E]_1$:
+	$$
+	[E]_1 :=
+	\left( \begin{array}{l}
+	\bar{t}
+	+ v \bar{r}
+	+ v^2 \bar{a}
+	+ v^3 \bar{b}
+	+ v^4 \bar{c} \\
+	+ v^5 \sigpolyevala
+	+ v^6 \sigpolyevalb
+	+ u\bar{z_1}
+	\end{array}
+	\right)
+	\cdot [1]_1
+	$$
+	\item Validate
+	$$
+	\begin{array}{c}
+	e([W_\chalpoint]_1 + u \cdot [W_{\chalpoint \omega}]_1,  [x]_2)
+	\overset{?}{=}
+	e(\chalpoint \cdot [W_\chalpoint]_1 + u\chalpoint\omega \cdot [W_{\chalpoint \omega}]_1 + [F]_1 - [E]_1, [1]_2) \\
+	\end{array}
+	$$
+\end{enumerate}
+
+
+
+ \section*{Acknowledgements} We thank Mary Maller for telling us about the field element reduction method discussed in the end of Section \ref{sec:polyprot}. We thank Vitalik Buterin for suggesting that we define the identity permutation using degree-1 polynomials, which reduces proof construction time, as well as reducing the proof size by 1 field element, and reduces the verification costs by 1 scalar multiplication. We thank Swastik Kopparty for pointing out an error in the permutation argument in a previous version of the paper, whose correction led to improved performance. We thank Justin Drake and Konstantin Panarin for discussions leading to corrections and simplifications of the permutation argument. We thank Sean Bowe, Alexander Vlasov and Kevaundray Wedderburn for comments and corrections. We thank the anonymous reviewers of SBC 2020 for their comments.\bibliographystyle{alpha}
+\bibliography{references}
+    
+\appendix
+    
+    
+
+\section{Claims for permutation argument:}
+
+Fix a permutation $\sigma$ of $[n]$, and $a_1,\ldots,a_n,b_1,\ldots,b_n \in \F$.
+\begin{claim}\label{clm:randpermO}
+ If the following holds with non-negligible probability over random $\beta,\gamma \in \F$
+ \[\prod_{i\in [n]} (a_i + \beta \cdot i + \gamma) = \prod_{i\in [n]} (b_i+ \beta \cdot \sigma(i) + \gamma)\] 
+ then $\forall i \in [n]$, $b_i = a_{\sigma(i)}$.
+\end{claim}
+
+We will prove claim \ref{clm:randpermO} using the following lemmas. For completeness, we include below a variant of the well-known Schwartz-Zippel lemma that we use in this paper.
+
+\begin{lemma}(Schwartz-Zippel). Let $P(X_1, \ldots, X_n)$ be a non-zero multivariate polynomial of degree $d$ over $\mathbb{Z}_p$, then
+the probability of $P(\alpha_1, \ldots, \alpha_n)= 0 \leftarrow \mathbb{Z}_p$ for randomly chosen $\alpha_1, \ldots, \alpha_n$ is at most $d/p$.
+\end{lemma}
+
+The Schwartz-Zippel lemma is used in polynomial equality testing. Given two multi-variate polynomials $P_1(X_1, \ldots, X_n)$
+and $P_2(X_1, \ldots, X_n)$ we can test whether $P_1(\alpha_1, \ldots, \alpha_n) -  P_2(\alpha_1, \ldots, \alpha_n)  = 0$ for random $\alpha_1, \ldots, \alpha_n  \leftarrow \mathbb{Z}_p$.
+If the two polynomials are identical, this will always be true, whereas if the two polynomials are different then the equality holds with probability at most $max(d_1, d_2)/p$, where $d_1$ and 
+$d_2$ are the degrees of the polynomials $P_1$ and $P_2$. 
+
+\begin{lemma}\label{le:simple_prod}
+If the following holds with non-negligible probability over random $\gamma \in \F$, 
+
+\begin{equation}
+\label{eq:simple_prod}
+\prod_{i=1}^{n}(a_i+\gamma) = \prod_{i=1}^{n}(b_i+\gamma) 
+\end{equation} 
+then the entries in the tuple $(a_1, \ldots, a_n)$ equal the entries in the tuple $(b_1, \ldots, b_n)$, but not necessarily in that order. 
+\end{lemma}
+
+\begin{proof}
+Let $P_a(X) =  \prod_{i=1}^{n}(X+ a_i)$ and $P_b(X) = \prod_{i=1}^{n}(X+b_i)$. The roots of $P_a$ are $(-a_1, \ldots, -a_n)$ and the roots of $P_b$ are $(-b_1, \ldots, -b_n)$.  
+By the Schwartz-Zippel lemma, if polynomials $P_a(X)$ and $P_b(X)$ are not equal, equality \ref{eq:simple_prod} holds with probability $\frac{n}{|\mathbb{F}|}$ which is negligible for any polynomial degree $n$ used in our snark construction. 
+Thus, equality \ref{eq:simple_prod} holds with non-negligible probability only when the two polynomials $P_a(X)$ and $P_b(X)$ are equal. This implies all the roots of $P_a(X)$ must be roots of $P_b(X)$ and the other way around, which, in turn, 
+implies the conclusion of the lemma. As a note, the conclusion of the lemma can be written in an equivalent but more formal way: there exist a permutation $\sigma$ of $[n]$ such that $b_i = a_{\sigma(i)}, \forall i \in [n]$.
+\end{proof}
+
+\begin{corollary} \label{co:simple_prod}
+Fix a permutation $\sigma$ of $[n]$, and $A_1,\ldots,A_n,B_1,\ldots,B_n \in \F$. If the following holds with non-negligible probability over random $\beta \in \F$, 
+ \[\prod_{i\in [n]} (A_i + \beta \cdot i) = \prod_{i\in [n]} (B_i+ \beta \cdot \sigma(i))\] 
+ then the values in the tuple $(\frac{B_1}{\sigma(1)}, \ldots, \frac{B_n}{\sigma(n)})$ are the same as the values in the tuple $(A_1, \ldots, \frac{A_n}{n})$, but not necessarily in this order. 
+  
+\begin{proof} The roots of $P_A(Y) = \prod_{i\in [n]} (i \cdot Y + A_i )$ are $(-A_1, \ldots, -\frac{A_n}{n})$, the roots of $P_B(Y) =  \prod_{i\in [n]} (\sigma (i) \cdot Y + B_i)$ are  $(-\frac{B_1}{\sigma(1)}, \ldots, -\frac{B_n}{\sigma(n)})$. Together with 
+lemma \ref{le:simple_prod}, we obtain the desired conclusion.
+\end{proof}
+
+\end{corollary}
+
+\begin{proof} for Claim \ref{clm:randpermO}
+
+Lets denote by $B_i = b_i + \gamma$ and $A_i = a_i + \gamma$, $\forall i \in [n]$. Then, according to \ref{co:simple_prod}, the values in the tuple $(\frac{B_1}{\sigma(1)}, \ldots, \frac{B_n}{\sigma(n)})$ are the same as the values in 
+the tuple $(A_1, \ldots, \frac{A_n}{n})$, $\forall i \in [n]$. Assume there exists $i_0 \in [n]$ such that $B_{i_0} \neq A_{\sigma(i_0)}$. This implies there exists $j \in [n]$, with $j \neq \sigma(i_0) $ such that $\frac{B_{i_0}}{\sigma(i_0)} = \frac{A_j}{j}$. 
+Expending, we obtain $j \cdot (b_{i_0}+ \gamma) = \sigma(i_0) \cdot (a_j + \gamma)$ and this holds with non-negligible probability over the choice of $\gamma$. Using the Schwartz-Zippel lemma as in \ref{le:simple_prod}, 
+we obtain that $\sigma(i_0) = j$ which contradicts our assumption. Hence, we have proven that $\forall  i \in [n], B_i = A_{\sigma(i)}$, which, in turn, implies $b_i = a_{\sigma(i)}$, $\forall  i \in [n]$. 
+\end{proof}
+
+
+% \subsection{Claims for permutation argument:}
+% \begin{claim}\label{clm:randperm}
+%  Fix a permutation $\sigma$ of $[n]$, and $a_1,\ldots,a_n,b_1,\ldots,b_n \in \F$.
+%  Suppose that for some $i\in [n]$, $b_{\sigma(i)}\neq a_i$.
+%  Then w.h.p. over random $\beta,\gamma \in \F$
+%  \[\prod_{i\in [n]} (a_i + \beta \cdot i + \gamma) \neq \prod_{i\in [n]} (b_{\sigma(i)} + \beta \cdot i + \gamma)\]
+% \end{claim}
+% 
+\end{document}
+
+
