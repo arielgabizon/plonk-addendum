@@ -186,7 +186,7 @@
  \newcommand{\defeq}{:=}
 
 \newcommand{\B}{\ensuremath{\vec{B}}\xspace}
-\newcommand{\dom}{\ensuremath{H}\xspace}
+\newcommand{\dom}{\ensuremath{H\setminus\set{1}}\xspace}
 \newcommand{\C}{\ensuremath{\vec{C}}\xspace}
 \newcommand{\Btwo}{\ensuremath{\vec{B_2}}\xspace}
 \newcommand{\treevecsimp}{\ensuremath{(\tau,\rho_A,\rho_A \rho_B,\rho_A\alpha_A,\rho_A\rho_B\alpha_B, \rho_A\rho_B\alpha_C,\beta,\beta\gamma)}\xspace}% The sets of elements used in simplifed relation tree in main text body
@@ -394,7 +394,7 @@
     \maketitle
 
 \begin{abstract}
-	In this note we give a variant of the \plonk permutation argument\cite{plonk} that enables a publc input component. The implication of this is ultimately enabling the \plonk verifier to perform two field multiplications per public input, instead of a group exponentiation as in the original proof system.
+	In this note we give a variant of the \plonk permutation argument\cite{plonk} that enables a publc input component. The implication of this reducing work of both prover and verifier done in the original proof system especially for enforcing the public input values. 
 	
 \end{abstract}
 
@@ -418,7 +418,7 @@ the prover doesn't require any computation beyond the permutation argument.
 \item The verifier only requires $2\ell$ field multiplications. 
 \end{itemize}
 
-We achieve this by adding a public input componet in the permutation argument itself, allowing it to verify certain consistency with the public inputs at the same time as validating the permutation.
+We achieve this by adding a public input component in the permutation argument itself, allowing it to verify consistency with the public inputs at the same time as validating the permutation.
 The basic idea will be to ``unbalance'' the grand product from \cite{plonk} so that instead of accumulating to one,
 it will reach a randomized value dependent on the public input
 
@@ -427,7 +427,7 @@ We use the ranged polynomial protocol terminology from \cite{plonk} to describe 
 \section{Polynomial protocols for identifying permutations with a public input}\label{sec:permprotocol}
  
 We assume $H\in \F$ is a multiplicative subgroup of order $n+1$ with generator \hgen.
-We let $\dom \defeq \set{1,\hgen,\hgen^2,\ldots,\hgen^{n-1}}$
+We let $\dom \defeq \set{\hgen,\hgen^2,\ldots,\hgen^{n+1}=1}$
 
 For $i\in [n]$, we denote by $L_i(X)$ the element of \polysofdeg{n} with $L_i(\hgen^{i})=1$ and $L_i(a)=0$ for $a\in \dom$ different from  $\hgen^{i}$, i.e. \sett{L_i}{i\in [n]} is a Lagrange basis for $\dom$.
 % %\footnote{It would be more natural to work with a basis for \dom, but it is more efficient to work with a basis for $H$, and Claim \ref{clm:pointcheck} implies this is also fine.}
@@ -464,7 +464,7 @@ That is, for $i\in [n]$
  \[f'(\hgen^i) = f(\hgen^i) + \beta\cdot i + \gamma,
  g'(\hgen^i) = g(\hgen^i) + \beta\cdot \sigma'(i) + \gamma\]
  \item \prvpoly computes $Z \in \polysofdeg{n+1}$, such that 
- $Z(1) = 1$; and for $i\in \set{1,\ldots,n+1}$
+ $Z(\hgen) = 1$; and for $i\in \set{1,\ldots,n+1}$
  \[Z(\hgen^i)  = \prod_{0\leq j <i} f'(\hgen^j)/g'(\hgen^j).\]
  (If one of the product elements is undefined, which happens w.p. \negl over $\gamma$, the protocol is aborted\footnote{This abort ruins the perfect completeness of the protocol. If one wishes to preserve perfect completeness, the protocol can be altered such that if for some $i$, $g'(\hgen^i)=0$, \prvpoly proves this to \verpoly, and \verpoly accepts in this case. This adds a \negl factor to the soundness error.}.)
  \item \prvpoly sends $Z$ to \ideal.
@@ -482,7 +482,7 @@ and outputs \acc iff all checks hold.
 \subsection{Analysis}
 
 
-For simplicity we use the notation $f_i\defeq f(\hgen^{i-1})$ below.
+For simplicity we use the notation $f_i\defeq f(\hgen^{i})$ below.
 Given fixed $f\in\polysofdeg{d}$ and $\inp\in \F^\ell$,
 define
 \begin{itemize}
@@ -571,7 +571,7 @@ $(g_1,\ldots,g_k)=\sigof{f_1,\ldots,f_k}$ if the following holds.
 
 Define the sequences $(f_{(1)},\ldots, f_{(kn)}),(g_{(1)},\ldots,g_{(kn)}) \in \F^{kn}$
 by 
-\[f_{((j-1)\cdot n + i)} \defeq f_j(\hgen^{i-1}), g_{((j-1)\cdot n + i)} \defeq g_j(\hgen^{i-1}),\]
+\[f_{((j-1)\cdot n + i)} \defeq f_j(\hgen^{i}), g_{((j-1)\cdot n + i)} \defeq g_j(\hgen^{i}),\]
 for each $j\in [k], i\in [n]$.
 Then we have $g_{(\ell)} = f_{(\sigma(\ell))}$ for each $\ell \in [kn]$.
 
@@ -598,13 +598,13 @@ with the exception that for $i\in [\ell]$, we set $\sigpoly_1(\hgen^{i}) = \zeta
  \item\label{item:betgamma} \verpoly chooses random $\beta,\gamma \in\F$ and sends to \prvpoly.
  \item Let $f_j'\defeq f_j+\beta\cdot  \idpoly_j +\gamma$, and $ g'_j\defeq g_j+\beta\cdot \sigpoly_j + \gamma$.
 That is, for $j\in [k],i\in [n]$
- \[f'_j(\hgen^{i-1}) = f_j(\hgen^{i-1}) + \beta((j-1)\cdot n + i) + \gamma,
- g'_j(\hgen^{i-1}) = g_j(\hgen^{i-1}) + \beta\cdot \sigma((j-1)\cdot n + i) + \gamma\]
+ \[f'_j(\hgen^{i-1}) = f_j(\hgen^{i}) + \beta((j-1)\cdot n + i) + \gamma,
+ g'_j(\hgen^{i-1}) = g_j(\hgen^{i}) + \beta\cdot \sigma((j-1)\cdot n + i) + \gamma\]
 \item Define $f',g' \in \polysofdeg{kn}$ by 
 \[f'(X) \defeq \prod_{j\in [k]} f'_j(X),g'(X) \defeq \prod_{j\in [k]} g'_j(X).\]
  
  \item \prvpoly computes $Z \in \polysofdeg{n+1}$, such that 
- $Z(1) =1$; and for $i\in \set{1,\ldots,n}$
+ $Z(\hgen) =1$; and for $i\in \set{1,\ldots,n}$
  \[Z(\hgen^i)  = \prod_{0\leq j <i} f'(\hgen^j)/g'(\hgen^j).\]
  (The case of one of the products being undefined is handled as in the previous protocol.)
  
