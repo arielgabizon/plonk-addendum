@@ -426,7 +426,7 @@ it will reach a randomized value dependent on the public input
 We use the ranged polynomial protocol terminology from \cite{plonk} to describe our protocol. See Section 4 of \cite{plonk} for an explanation.
 \section{Polynomial protocols for identifying permutations with a public input}\label{sec:permprotocol}
  
-We assume $H\in \F$ is a multiplicative subgroup of order $n+1$ with generator \hgen.
+We assume $H\subset \F$ is a multiplicative subgroup of order $n+1$ with generator \hgen.
 We let $\dom \defeq \set{\hgen,\hgen^2,\ldots,\hgen^{n+1}=1}$
 
 For $i\in [n]$, we denote by $L_i(X)$ the element of \polysofdeg{n} with $L_i(\hgen^{i})=1$ and $L_i(a)=0$ for $a\in \dom$ different from  $\hgen^{i}$, i.e. \sett{L_i}{i\in [n]} is a Lagrange basis for $\dom$.
@@ -551,11 +551,11 @@ For any strategy of \prvpoly, the probability of \verpoly outputting \acc in the
  \[a\defeq \prod_{i\in [n]}f'_i/g'_i \neq \pubinputdelta.\]
  Assume $\beta,\gamma$ were chosen such that the above holds, and also such that $g'_i\neq 0$ for all $i\in [n]$. We show \verpoly rejects; specifically, that assuming both identities \verpoly checks hold leads to contradiction.
  
- From the first check we know that $Z(1) = 1$.
+ From the first check we know that $Z(\hgen) = 1$.
 From the second check we can show inductively, that for each $i\in [n]$
 \[Z(\hgen^{i}) = \prod_{0\leq j < i} \frac{f'(\hgen^j)}{g'(\hgen^j)}.\]
-In particular, $Z(\hgen^{n})=a$.
-From the last check we know that $Z(\hgen^n)=\pubinputdelta\neq a$;
+In particular, $Z(\hgen^{n+1})=a$.
+From the last check we know that $Z(\hgen^{n+1})=\pubinputdelta\neq a$;
 hence we've arrived at a contradiction.
 \end{proof}
 
