@@ -86,7 +86,7 @@
 % \newcommand{\plonk}{\ensuremath{\mathtt{PLONK}}\xspace}
 %%% the "real" document content comes below...
 %\newcommand{\papertitle}{$\mathsf{Maitreya}$: Improved Prover Efficiency in Fully Succinct Universal zk-SNARKs through Permutation Arguments for Multiplicative Subgroups}
-\newcommand{\papertitle}{Public inputs in \plonk in the COVID-19 era}
+\newcommand{\papertitle}{Public inputs in \plonk 's permutation argument}
 %\newcommand{\authorname}}
 \newcommand{\company}{}
 \title{ \bf \papertitle \\[0.72cm]}
@@ -533,7 +533,7 @@ Then e.w.p $2(n+\ell)/|\F|$ over $\beta,\gamma \in \F$.
   
  For the other direction, assume first $f_i\neq \inp_i$ for some $i\in [\ell]$.
  Think of both sides as bi-variate polynomials in $\beta,\gamma$.
- Recall we have unique decomposition to irreducible factors in $\F[\beta,\gamma]$. Since both sides are decomposed to linear factors, this means that if we show a factor only appears on one side, the polynomials are different and thus disagree e.w.p $(n+\ell)/\sizef$.
+ Recall we have unique decomposition to irreducible factors in $\F[\beta,\gamma]$ that are monic in $\gamma$. Since both sides are decomposed to linear factors, this means that if we show a factor only appears on one side, the polynomials are different and thus disagree e.w.p $(n+\ell)/\sizef$.
   Then the factor $(\inp_i + \beta\sigma'(i) +\gamma)$ appears on LHS but not RHS.
   
   Now assume $f_i=\inp_i$ for each $i\in [\ell]$ and  for some $i\in [n]$,
@@ -610,11 +610,11 @@ That is, for $j\in [k],i\in [n]$
  
  
  \item \prvpoly sends $Z$ to \ideal.
- \item \verpoly checks if for all $a\in \dom$
+ \item \verpoly checks if for all $\x\in \dom$
  \begin{enumerate}
-  \item $L_1(a) (Z(a)-1) =0$.
-  \item $Z(a)f'(a) = g'(a)Z(a\cdot \hgen)$.
-  \item $L_n(a)(Z(a)-\pubinputdelta)=0$.
+  \item $L_1(\x) (Z(\x)-1) =0$.
+  \item $Z(\x)f'(\x) = g'(\x)Z(\x\cdot \hgen)$.
+  \item $L_n(\x)(Z(\x\cdot \hgen)-\pubinputdelta)=0$.
  \end{enumerate}
  and outputs \acc iff all checks hold.
 \end{enumerate}
@@ -932,7 +932,8 @@ Compute permutation polynomial $\idpermpoly(X):$
 
 
 
- \section*{Acknowledgements} We thank Mary Maller for telling us about the field element reduction method discussed in the end of Section \ref{sec:polyprot}. We thank Vitalik Buterin for suggesting that we define the identity permutation using degree-1 polynomials, which reduces proof construction time, as well as reducing the proof size by 1 field element, and reduces the verification costs by 1 scalar multiplication. We thank Swastik Kopparty for pointing out an error in the permutation argument in a previous version of the paper, whose correction led to improved performance. We thank Justin Drake and Konstantin Panarin for discussions leading to corrections and simplifications of the permutation argument. We thank Sean Bowe, Alexander Vlasov and Kevaundray Wedderburn for comments and corrections. We thank the anonymous reviewers of SBC 2020 for their comments.\bibliographystyle{alpha}
+%  \section*{Acknowledgements} We thank Mary Maller for telling us about the field element reduction method discussed in the end of Section \ref{sec:polyprot}. We thank Vitalik Buterin for suggesting that we define the identity permutation using degree-1 polynomials, which reduces proof construction time, as well as reducing the proof size by 1 field element, and reduces the verification costs by 1 scalar multiplication. We thank Swastik Kopparty for pointing out an error in the permutation argument in a previous version of the paper, whose correction led to improved performance. We thank Justin Drake and Konstantin Panarin for discussions leading to corrections and simplifications of the permutation argument. We thank Sean Bowe, Alexander Vlasov and Kevaundray Wedderburn for comments and corrections. We thank the anonymous reviewers of SBC 2020 for their comments.
+\bibliographystyle{alpha}
 \bibliography{references}
     
 \appendix
