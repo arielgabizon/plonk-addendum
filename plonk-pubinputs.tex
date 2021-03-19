@@ -932,80 +932,18 @@ Compute permutation polynomial $\idpermpoly(X):$
 
 
 
+
 \section*{Acknowledgements}
+ 
  We thank Konstantin Panarin for a correction. 
-\bibliographystyle{alpha}
+
+ \bibliographystyle{alpha}
 \bibliography{references}
     
 \appendix
     
     
 
-\section{Claims for permutation argument:}
-
-Fix a permutation $\sigma$ of $[n]$, and $a_1,\ldots,a_n,b_1,\ldots,b_n \in \F$.
-\begin{claim}\label{clm:randpermO}
- If the following holds with non-negligible probability over random $\beta,\gamma \in \F$
- \[\prod_{i\in [n]} (a_i + \beta \cdot i + \gamma) = \prod_{i\in [n]} (b_i+ \beta \cdot \sigma(i) + \gamma)\] 
- then $\forall i \in [n]$, $b_i = a_{\sigma(i)}$.
-\end{claim}
-
-We will prove claim \ref{clm:randpermO} using the following lemmas. For completeness, we include below a variant of the well-known Schwartz-Zippel lemma that we use in this paper.
-
-\begin{lemma}(Schwartz-Zippel). Let $P(X_1, \ldots, X_n)$ be a non-zero multivariate polynomial of degree $d$ over $\mathbb{Z}_p$, then
-the probability of $P(\alpha_1, \ldots, \alpha_n)= 0 \leftarrow \mathbb{Z}_p$ for randomly chosen $\alpha_1, \ldots, \alpha_n$ is at most $d/p$.
-\end{lemma}
-
-The Schwartz-Zippel lemma is used in polynomial equality testing. Given two multi-variate polynomials $P_1(X_1, \ldots, X_n)$
-and $P_2(X_1, \ldots, X_n)$ we can test whether $P_1(\alpha_1, \ldots, \alpha_n) -  P_2(\alpha_1, \ldots, \alpha_n)  = 0$ for random $\alpha_1, \ldots, \alpha_n  \leftarrow \mathbb{Z}_p$.
-If the two polynomials are identical, this will always be true, whereas if the two polynomials are different then the equality holds with probability at most $max(d_1, d_2)/p$, where $d_1$ and 
-$d_2$ are the degrees of the polynomials $P_1$ and $P_2$. 
-
-\begin{lemma}\label{le:simple_prod}
-If the following holds with non-negligible probability over random $\gamma \in \F$, 
-
-\begin{equation}
-\label{eq:simple_prod}
-\prod_{i=1}^{n}(a_i+\gamma) = \prod_{i=1}^{n}(b_i+\gamma) 
-\end{equation} 
-then the entries in the tuple $(a_1, \ldots, a_n)$ equal the entries in the tuple $(b_1, \ldots, b_n)$, but not necessarily in that order. 
-\end{lemma}
-
-\begin{proof}
-Let $P_a(X) =  \prod_{i=1}^{n}(X+ a_i)$ and $P_b(X) = \prod_{i=1}^{n}(X+b_i)$. The roots of $P_a$ are $(-a_1, \ldots, -a_n)$ and the roots of $P_b$ are $(-b_1, \ldots, -b_n)$.  
-By the Schwartz-Zippel lemma, if polynomials $P_a(X)$ and $P_b(X)$ are not equal, equality \ref{eq:simple_prod} holds with probability $\frac{n}{|\mathbb{F}|}$ which is negligible for any polynomial degree $n$ used in our snark construction. 
-Thus, equality \ref{eq:simple_prod} holds with non-negligible probability only when the two polynomials $P_a(X)$ and $P_b(X)$ are equal. This implies all the roots of $P_a(X)$ must be roots of $P_b(X)$ and the other way around, which, in turn, 
-implies the conclusion of the lemma. As a note, the conclusion of the lemma can be written in an equivalent but more formal way: there exist a permutation $\sigma$ of $[n]$ such that $b_i = a_{\sigma(i)}, \forall i \in [n]$.
-\end{proof}
-
-\begin{corollary} \label{co:simple_prod}
-Fix a permutation $\sigma$ of $[n]$, and $A_1,\ldots,A_n,B_1,\ldots,B_n \in \F$. If the following holds with non-negligible probability over random $\beta \in \F$, 
- \[\prod_{i\in [n]} (A_i + \beta \cdot i) = \prod_{i\in [n]} (B_i+ \beta \cdot \sigma(i))\] 
- then the values in the tuple $(\frac{B_1}{\sigma(1)}, \ldots, \frac{B_n}{\sigma(n)})$ are the same as the values in the tuple $(A_1, \ldots, \frac{A_n}{n})$, but not necessarily in this order. 
-  
-\begin{proof} The roots of $P_A(Y) = \prod_{i\in [n]} (i \cdot Y + A_i )$ are $(-A_1, \ldots, -\frac{A_n}{n})$, the roots of $P_B(Y) =  \prod_{i\in [n]} (\sigma (i) \cdot Y + B_i)$ are  $(-\frac{B_1}{\sigma(1)}, \ldots, -\frac{B_n}{\sigma(n)})$. Together with 
-lemma \ref{le:simple_prod}, we obtain the desired conclusion.
-\end{proof}
-
-\end{corollary}
-
-\begin{proof} for Claim \ref{clm:randpermO}
-
-Lets denote by $B_i = b_i + \gamma$ and $A_i = a_i + \gamma$, $\forall i \in [n]$. Then, according to \ref{co:simple_prod}, the values in the tuple $(\frac{B_1}{\sigma(1)}, \ldots, \frac{B_n}{\sigma(n)})$ are the same as the values in 
-the tuple $(A_1, \ldots, \frac{A_n}{n})$, $\forall i \in [n]$. Assume there exists $i_0 \in [n]$ such that $B_{i_0} \neq A_{\sigma(i_0)}$. This implies there exists $j \in [n]$, with $j \neq \sigma(i_0) $ such that $\frac{B_{i_0}}{\sigma(i_0)} = \frac{A_j}{j}$. 
-Expending, we obtain $j \cdot (b_{i_0}+ \gamma) = \sigma(i_0) \cdot (a_j + \gamma)$ and this holds with non-negligible probability over the choice of $\gamma$. Using the Schwartz-Zippel lemma as in \ref{le:simple_prod}, 
-we obtain that $\sigma(i_0) = j$ which contradicts our assumption. Hence, we have proven that $\forall  i \in [n], B_i = A_{\sigma(i)}$, which, in turn, implies $b_i = a_{\sigma(i)}$, $\forall  i \in [n]$. 
-\end{proof}
-
-
-% \subsection{Claims for permutation argument:}
-% \begin{claim}\label{clm:randperm}
-%  Fix a permutation $\sigma$ of $[n]$, and $a_1,\ldots,a_n,b_1,\ldots,b_n \in \F$.
-%  Suppose that for some $i\in [n]$, $b_{\sigma(i)}\neq a_i$.
-%  Then w.h.p. over random $\beta,\gamma \in \F$
-%  \[\prod_{i\in [n]} (a_i + \beta \cdot i + \gamma) \neq \prod_{i\in [n]} (b_{\sigma(i)} + \beta \cdot i + \gamma)\]
-% \end{claim}
-% 
 \end{document}
 
 
