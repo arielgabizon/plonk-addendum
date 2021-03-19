@@ -474,7 +474,7 @@ That is, for $i\in [n]$
  \begin{enumerate}
   \item $L_1(\x) (Z(\x)-1) = 0$.
   \item $Z(\x)f'(\x) = g'(\x)Z(\x\cdot \hgen)$.
-\item $L_n(\x)(Z(\x\cdot \hgen)-\pubinputdelta) = \inp$.
+\item $L_n(\x)(Z(\x\cdot \hgen)-\pubinputdelta) = 0$.
   \end{enumerate}
 and outputs \acc iff all checks hold.
 \end{enumerate}
@@ -932,7 +932,8 @@ Compute permutation polynomial $\idpermpoly(X):$
 
 
 
-%  \section*{Acknowledgements} We thank Mary Maller for telling us about the field element reduction method discussed in the end of Section \ref{sec:polyprot}. We thank Vitalik Buterin for suggesting that we define the identity permutation using degree-1 polynomials, which reduces proof construction time, as well as reducing the proof size by 1 field element, and reduces the verification costs by 1 scalar multiplication. We thank Swastik Kopparty for pointing out an error in the permutation argument in a previous version of the paper, whose correction led to improved performance. We thank Justin Drake and Konstantin Panarin for discussions leading to corrections and simplifications of the permutation argument. We thank Sean Bowe, Alexander Vlasov and Kevaundray Wedderburn for comments and corrections. We thank the anonymous reviewers of SBC 2020 for their comments.
+\section*{Acknowledgements}
+ We thank Konstantin Panarin for a correction. 
 \bibliographystyle{alpha}
 \bibliography{references}
     
